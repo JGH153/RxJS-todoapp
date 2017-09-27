@@ -1,0 +1,19 @@
+<div class="card todoEditCard" style="width: 20rem;" *ngIf="showComponent">
+    <img class="card-img-top" src="assets/todo.jpg" alt="Card image cap">
+    <div class="card-body">
+        <h4 class="card-title">Todo edit item</h4>
+
+        <form >
+            <div class="form-group">
+                <label for="editTodoItemValue">Todo text</label>
+                <input [(ngModel)]="todoItemEditVale" id="editTodoItemValue" name="editTodoItemValue" type="text" class="form-control" placeholder="What to do">
+                <small class="form-text text-muted">Edit text.</small>
+            </div>
+            <div class="form-group">
+                <button type="button" class="btn btn-warning editTodoButton" (click)="clickSaveItem()" >Save to list</button>
+            </div>
+
+        </form>
+
+    </div>
+</div>

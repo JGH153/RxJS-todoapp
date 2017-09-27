@@ -1,0 +1,20 @@
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Human ID</th>
+            <th>Value</th>
+            <th>Edit</th>
+            <th>Delete</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let currentItem of todoListLocal; let i = index">
+            <th scope="row">{{currentItem.humanId}}</th>
+            <td>{{currentItem.value}}</td>
+            <td><button type="button" class="btn btn-warning" (click)="onOpenEditItem(i)" >Edit</button></td>
+            <td><button type="button" class="btn btn-danger" (click)="onDeleteItem(i)" >Delete</button></td>
+        </tr>
+    </tbody>
+</table>
+
+<button type="button" class="btn btn-success" (click)="openAddItem()">Add new item</button>

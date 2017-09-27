@@ -1,0 +1,34 @@
+import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
+import { FormsModule }   from '@angular/forms';
+
+import { TodoService } from './service/todo.service'
+
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
+import { TodoListComponent } from './todo-list/todo-list.component';
+import { TodoEditComponent } from './todo-edit/todo-edit.component';
+import { TodoNewComponent } from './todo-new/todo-new.component';
+import { TodoCounterComponent } from './todo-counter/todo-counter.component';
+import { TodoFishFinderComponent } from './todo-fish-finder/todo-fish-finder.component';
+
+@NgModule({
+    declarations: [
+        AppComponent,
+        TodoListComponent,
+        TodoEditComponent,
+        TodoNewComponent,
+        TodoCounterComponent,
+        TodoFishFinderComponent
+    ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        FormsModule
+    ],
+    providers: [
+        TodoService
+    ],
+    bootstrap: [AppComponent]
+})
+export class AppModule { }

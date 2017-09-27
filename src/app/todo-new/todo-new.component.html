@@ -1,0 +1,23 @@
+
+<div class="card todoAddCard" style="width: 20rem;" *ngIf="showComponent">
+    <img class="card-img-top" src="assets/todo.jpg" alt="Card image cap">
+    <div class="card-body">
+        <h4 class="card-title">Todo add item</h4>
+
+        <form >
+            <div class="form-group">
+                <label for="newTodoItemValue">Todo text</label>
+                <input [(ngModel)]="todoItemAddVale" id="newTodoItemValue" name="newTodoItemValue" type="text" class="form-control" placeholder="What to do">
+                <small class="form-text text-muted">What you want to add.</small>
+            </div>
+            <div class="form-group">
+                <button type="button" class="btn btn-success addTodoButton" (click)="onClickAddRandomItem()" >Add to list</button>
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+
+

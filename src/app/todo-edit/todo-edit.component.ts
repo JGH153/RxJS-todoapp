@@ -25,7 +25,6 @@ export class TodoEditComponent implements OnInit {
             return current.editId !== null;
         })
         .map(current => {
-            console.log(current.editId)
             return {
                 editId: current.editId,
                 editObject: current.todoItems[current.editId]

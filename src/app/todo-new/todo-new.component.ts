@@ -23,6 +23,7 @@ export class TodoNewComponent implements OnInit {
             return current.addItemActive
 
         })
+        //.delay(100)
         .subscribe(next => {
             this.showComponent = next;
         });

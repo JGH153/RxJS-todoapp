@@ -18,6 +18,7 @@ export class TodoListComponent implements OnInit {
 
     ngOnInit() {
         this._todoService.getStream()
+        .filter(current => current.todoListChanged)
         .map(current => {
             return current.todoItems;
         })
@@ -34,8 +35,9 @@ export class TodoListComponent implements OnInit {
         this._todoService.deleteItemById(itemId);
     }
 
-    openAddItem(){
-        this._todoService.setAddNewItem(true);
+    onOpenItem(itemId){
+        this._todoService.setOpenItem(itemId);
+        console.log("yay")
     }
 
 }

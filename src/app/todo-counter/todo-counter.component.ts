@@ -18,12 +18,18 @@ export class TodoCounterComponent implements OnInit {
 
     ngOnInit() {
         this._todoService.getStream()
+        .filter(current => current.todoListChanged)
+        .delay(1000)
         .map(current => {
             return current.todoItems;
         })
         .subscribe(next => {
             this.numElements = next.length;
         });
+    }
+
+    openAddItem(){
+        this._todoService.setAddNewItem(true);
     }
 
 }

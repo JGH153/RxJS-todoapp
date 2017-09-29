@@ -11,6 +11,7 @@ import { TodoEditComponent } from './todo-edit/todo-edit.component';
 import { TodoNewComponent } from './todo-new/todo-new.component';
 import { TodoCounterComponent } from './todo-counter/todo-counter.component';
 import { TodoFishFinderComponent } from './todo-fish-finder/todo-fish-finder.component';
+import { TodoItemComponent } from './todo-item/todo-item.component';
 
 @NgModule({
     declarations: [
@@ -19,7 +20,8 @@ import { TodoFishFinderComponent } from './todo-fish-finder/todo-fish-finder.com
         TodoEditComponent,
         TodoNewComponent,
         TodoCounterComponent,
-        TodoFishFinderComponent
+        TodoFishFinderComponent,
+        TodoItemComponent
     ],
     imports: [
         BrowserModule,

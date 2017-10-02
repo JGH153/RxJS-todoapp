@@ -5,6 +5,7 @@ import { TodoService } from './service/todo.service'
 
 import 'rxjs/Rx';
 import { Subject } from 'rxjs/Subject';
+import { ReplaySubject } from 'rxjs/ReplaySubject';
 import { Observable } from 'rxjs/Observable';
 
 @Component({
@@ -43,22 +44,121 @@ export class AppComponent implements OnInit {
         //this.combineLatest();
         //this.observableErrors();
         //this.observableAjaxSwitchMap();
-        this.observablePollData();
+        // this.observablePollData();
+        // this.observablePollDataError();
+        //this.throttleDebounceTime();
+        //this.mouseMoveDebounce();
+        //this.observableRacing();
+        //this.observableSequence();
+        this.replaySubjects();
 
+
+    }
+
+    replaySubjects(){
+        let replaySubject = new ReplaySubject(2); //2 = buffer size
+
+        replaySubject.next("1");
+        replaySubject.next("2");
+        replaySubject.next("3");
+
+        replaySubject.subscribe(next => {
+            console.log(next) //2, 3
+        });
+    }
+
+    observableSequence(){
+
+        const allObservables = Observable.concat(
+            Observable.interval(300).take(3).map(next => "Timer 1"),
+            Observable.interval(400).take(3).map(next => "Timer 2"),
+            Observable.interval(200).take(3).map(next => "Timer 3"),
+        ).subscribe(next => {
+            console.log(next)
+        })
+
+    }
+
+    observableRacing(){
+        const race = Observable.race(
+            Observable.interval(1000).map(next => "Timer 1"),
+            Observable.interval(700).map(next => "Timer 2"),
+            this._http.get("https://hembstudios.no/birdid/IDprogram/getQuestionsData.php?JSON=1&sessionID=&numberQuestions=80&numRepeatingSpecies=2&difficulty=1&areaID=0&mediaType=1&competitionGroupID=-1&accessCodeCompetitionGroup=&langID=2&siteID=1")
+        )
+        .take(1)
+        .subscribe(next => {
+            console.log("winner: " + next)
+            console.log(next)
+        })
+    }
+
+    mouseMoveDebounce(){
+
+        Observable.fromEvent(window, 'mousemove')
+        .debounceTime(1000)
+        .subscribe(next => {
+            console.log(next)
+        });
+
+    }
+
+    throttleDebounceTime(){
+
+        const myObservable = new Observable(observer => {
+            Observable.interval(250).subscribe(next => {
+                if(Math.random() > 0.3){
+                    observer.next(next);
+                }
+            });
+        });
+
+        myObservable
+        //.throttleTime(600)
+        //.debounceTime(600)
+        .subscribe(next => {
+            console.log("next " + next)
+        })
+
+    }
+
+    observablePollDataError(){
+
+        const myObservable = new Observable(observer => {
+            Observable.interval(2000).subscribe(next => {
+                this._http.get("https://hembstudios.no/birdid/IDprogram/getQuestionsData.php?JSON=1&sessionID=&numberQuestions=80&numRepeatingSpecies=2&difficulty=1&areaID=0&mediaType=1&competitionGroupID=-1&accessCodeCompetitionGroup=&langID=2&siteID=1").subscribe(value  => {
+                    observer.next(value);
+                })
+            });
+        });
+
+        myObservable
+        .map(next => {
+            throw new Error("This is an error!");
+        })
+        .catch(error => {
+            console.log("error! + " + error);
+            return myObservable;
+        })
+        .take(3)
+        .subscribe(
+            next => console.log(next),
+            error => console.log("Subsc error: " + error),
+            () => console.log("Subsc complete")
+        )
 
     }
 
     observablePollData(){
 
         const myObservable = new Observable(observer => {
-
             Observable.interval(2000).subscribe(next => {
                 this._http.get("https://hembstudios.no/birdid/IDprogram/getQuestionsData.php?JSON=1&sessionID=&numberQuestions=80&numRepeatingSpecies=2&difficulty=1&areaID=0&mediaType=1&competitionGroupID=-1&accessCodeCompetitionGroup=&langID=2&siteID=1").subscribe(value  => {
                     observer.next(value);
                 })
             });
+        });
 
-        })
+        myObservable
         .subscribe(value => {
             console.log(value);
         })
@@ -67,9 +167,17 @@ export class AppComponent implements OnInit {
 
     observableAjaxSwitchMap(){
 
-        Observable.interval(500)
-        .switchMap(() => {
-            return Observable.empty();
+        Observable.interval(2000)
+        .flatMap(() => {
+            return this._http.get("https://hembstudios.no/birdid/IDprogram/getQuestionsData.php?JSON=1&sessionID=&numberQuestions=80&numRepeatingSpecies=2&difficulty=1&areaID=0&mediaType=1&competitionGroupID=-1&accessCodeCompetitionGroup=&langID=2&siteID=1")
+                .map(next => {
+                    if(Math.random() <  0.3){
+                        throw new Error("This is an error!")
+                    }else{
+                        return next;
+                    }
+                })
+                .catch(error => Observable.empty())
         })
         .subscribe(data => {
             console.log(data);

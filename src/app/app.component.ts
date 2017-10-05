@@ -6,6 +6,7 @@ import { TodoService } from './service/todo.service'
 import 'rxjs/Rx';
 import { Subject } from 'rxjs/Subject';
 import { ReplaySubject } from 'rxjs/ReplaySubject';
+import { AsyncSubject } from 'rxjs/AsyncSubject';
 import { Observable } from 'rxjs/Observable';
 
 @Component({
@@ -50,8 +51,64 @@ export class AppComponent implements OnInit {
         //this.mouseMoveDebounce();
         //this.observableRacing();
         //this.observableSequence();
-        this.replaySubjects();
+        //this.replaySubjects();
+        //this.asyncSubject();
+        //this.creatingObservables();
+        //this.sharedObservable();
 
+
+    }
+
+    sharedObservable(){
+
+        var myObservable =  new Observable(observer => {
+    		observer.next(42);
+    		setTimeout(() => {
+    			observer.next(200);
+    		}, 1000);
+    	}).share();
+
+    	myObservable.subscribe(next => {
+    		console.log("S1:" + next)
+    	});
+
+    	myObservable.subscribe(next => {
+    		console.log("S2:" + next)
+    	});
+
+    }
+
+    creatingObservables(){
+
+        // let myObservable = Observable.of(1, 2, 3);
+
+        // let myObservable = Observable.interval(300);
+
+        const myObservable = new Observable(observer => {
+            let counter = 0;
+            let interval = setInterval(() => {
+                observer.next( counter++ );
+            }, 300);
+            return () => { clearInterval(interval) }
+        });
+        myObservable.subscribe(next => {
+            console.log(next)
+        })
+
+
+    }
+
+    asyncSubject(){
+        let asyncSubject = new AsyncSubject();
+        asyncSubject.subscribe(
+            next => {console.log(next)},
+            error => {console.log("error")},
+            () => {console.log("complete")}
+        );
+
+        asyncSubject.next("1");
+        asyncSubject.next("2");
+        asyncSubject.complete();
 
     }
 
@@ -167,8 +224,8 @@ export class AppComponent implements OnInit {
 
     observableAjaxSwitchMap(){
 
-        Observable.interval(2000)
-        .flatMap(() => {
+        Observable.interval(5000)
+        .switchMap(() => {
             return this._http.get("https://hembstudios.no/birdid/IDprogram/getQuestionsData.php?JSON=1&sessionID=&numberQuestions=80&numRepeatingSpecies=2&difficulty=1&areaID=0&mediaType=1&competitionGroupID=-1&accessCodeCompetitionGroup=&langID=2&siteID=1")
                 .map(next => {
                     if(Math.random() <  0.3){

@@ -9,6 +9,10 @@ import { ReplaySubject } from 'rxjs/ReplaySubject';
 import { AsyncSubject } from 'rxjs/AsyncSubject';
 import { Observable } from 'rxjs/Observable';
 
+//npm install synaptic --save
+//npm install --save @types/synaptic
+import * as synaptic from 'synaptic';
+
 @Component({
     selector: 'TRXJS-root',
     templateUrl: './app.component.html',
@@ -55,7 +59,61 @@ export class AppComponent implements OnInit {
         //this.asyncSubject();
         //this.creatingObservables();
         //this.sharedObservable();
+        //this.webWorkerObservable();
+        this.nnObservable();
 
+
+    }
+
+    nnObservable(){
+        console.log(synaptic)
+        var myPerceptron = new synaptic.Architect.Perceptron(2,3,1);
+        var myTrainer = new synaptic.Trainer(myPerceptron);
+
+        myTrainer.XOR({
+			iterations: 10000
+		}); // { error: 0.004998819355993572, iterations: 21871, time: 356 }
+
+        console.log(myPerceptron.activate([0,0])); // 0.0268581547421616
+        console.log(myPerceptron.activate([1,0])); // 0.9829673642853368
+        console.log(myPerceptron.activate([0,1])); // 0.9831714267395621
+        console.log(myPerceptron.activate([1,1])); // 0.02128894618097928
+
+    }
+
+    webWorkerObservable(){
+
+
+
+
+        var myObservable =  new Observable(observer => {
+
+            if ((<any>window).Worker) {
+                var myWorker = new Worker('/assets/worker.js');
+
+                myWorker.onmessage = (event) => {
+                    observer.next(event.data)
+                }
+
+                () => {
+                    myWorker.terminate();
+                }
+            }
+
+        });
+
+        let subscription = myObservable.subscribe(
+            next => {console.log("Rc 1: " + next)}
+        );
+
+        let subscription2 = myObservable.subscribe(
+            next => {console.log("Rc 2: " + next)}
+        );
+
+        setTimeout(() => {
+            subscription.unsubscribe();
+            subscription2.unsubscribe();
+        }, 1800);
 
     }
 
